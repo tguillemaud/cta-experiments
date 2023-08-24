@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random CTA Display with Cookie</title>
+    <!-- Include the Google Analytics script (assuming you're using the Universal Analytics) -->
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'YOUR-UA-CODE', 'auto');  // replace 'YOUR-UA-CODE' with your Google Analytics tracking ID
+      ga('send', 'pageview');
+    </script>
+    <style>
+        #cta-left, #cta-right {
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            display: none;
+        }
+    </style>
+</head>
+<body onload="displayRandomCTA()">
+
+<button id="cta-left" onclick="window.location.href='contact.html'">CTA Left</button>
+
+<p>Some text here for the first paragraph.</p>
+<p>Some text here for the second paragraph.</p>
+
+<button id="cta-right" onclick="window.location.href='contact.html'">CTA Right</button>
+
+<script>
+    function setCookie(name, value, days) {
+        var expires = "";
+        if (days) {
+            var date = new Date();
+            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+            expires = "; expires=" + date.toUTCString();
+        }
+        document.cookie = name + "=" + (value || "") + expires + "; path=/";
+    }
+
+    function getCookie(name) {
+        var nameEQ = name + "=";
+        var ca = document.cookie.split(';');
+        for (var i = 0; i < ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+            if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+        }
+        return null;
+    }
+
+    function displayRandomCTA() {
+        var ctaLeft = document.getElementById("cta-left");
+        var ctaRight = document.getElementById("cta-right");
+
+        // Check if the cookie is set
+        var ctaCookie = getCookie("ctaVersion");
+
+        if (ctaCookie) {
+            if (ctaCookie === "left") {
+                ctaLeft.style.display = "block";
+            } else {
+                ctaRight.style.display = "block";
+            }
+        } else {
+            var randomNum = Math.random();
+
+            if (randomNum < 0.5) {
+                ctaLeft.style.display = "block";
+                setCookie("ctaVersion", "left", 365); // setting the cookie for 365 days
+                // Send event to Google Analytics
+                ga('send', 'event', 'CTA Display', 'load', 'CTA Left');
+            } else {
+                ctaRight.style.display = "block";
+                setCookie("ctaVersion", "right", 365); // setting the cookie for 365 days
+                // Send event to Google Analytics
+                ga('send', 'event', 'CTA Display', 'load', 'CTA Right');
+            }
+        }
+    }
+</script>
+
+</body>
+</html>
